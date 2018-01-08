@@ -1,23 +1,26 @@
 package com.example.demo.repository;
 
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 
 import com.example.demo.domain.Todo;
 
 public class CustomizedTodoRepositorySpringJdbcImpl implements CustomizedTodoRepository {
 
-	private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+	private static final RowMapper<Todo> ROW_MAPPER = new BeanPropertyRowMapper<>(Todo.class);
 
-	public CustomizedTodoRepositorySpringJdbcImpl(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
-		this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
+	private final NamedParameterJdbcOperations namedParameterJdbcOperations;
+
+	public CustomizedTodoRepositorySpringJdbcImpl(NamedParameterJdbcOperations namedParameterJdbcOperations) {
+		this.namedParameterJdbcOperations = namedParameterJdbcOperations;
 	}
 
 	public Iterable<Todo> findAllByFinished(boolean finished) {
-		return this.namedParameterJdbcTemplate.query(
+		return this.namedParameterJdbcOperations.query(
 				"SELECT id, title, details, finished FROM todo WHERE finished = :finished ORDER BY id",
-				new MapSqlParameterSource("finished", finished), new BeanPropertyRowMapper<Todo>(Todo.class));
+				new MapSqlParameterSource("finished", finished), ROW_MAPPER);
 	}
 
 }

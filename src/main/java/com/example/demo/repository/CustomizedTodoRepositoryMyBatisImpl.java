@@ -7,6 +7,7 @@ import com.example.demo.domain.Todo;
 public class CustomizedTodoRepositoryMyBatisImpl implements CustomizedTodoRepository {
 
 	private final String NAMESPACE = Todo.class.getName() + "Mapper";
+
 	private final SqlSession sqlSession;
 
 	public CustomizedTodoRepositoryMyBatisImpl(SqlSession sqlSession) {
