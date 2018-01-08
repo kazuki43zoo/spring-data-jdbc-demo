@@ -64,6 +64,21 @@ public abstract class AbstractSpringDataJdbcTests {
 	}
 
 	@Test
+	public void existsById() {
+		Todo newTodo = new Todo();
+		newTodo.setTitle("飲み会");
+		newTodo.setDetails("銀座 19:00");
+		todoRepository.save(newTodo);
+
+		boolean exists = todoRepository.existsById(newTodo.getId());
+
+		Assertions.assertThat(exists).isTrue();
+
+		Assertions.assertThat(todoRepository.existsById(newTodo.getId() + 1)).isFalse();
+
+	}
+
+	@Test
 	public void count() {
 		Todo newTodo = new Todo();
 		newTodo.setTitle("飲み会");

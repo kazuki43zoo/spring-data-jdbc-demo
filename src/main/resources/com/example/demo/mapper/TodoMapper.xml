@@ -23,6 +23,9 @@
 	<delete id="deleteAll">
 		DELETE FROM todo
 	</delete>
+	<select id="existsById" resultType="_boolean">
+		SELECT count(*) FROM todo WHERE id = #{id}
+	</select>
 	<select id="findById" resultType="com.example.demo.domain.Todo">
 		SELECT
 			id, title, details, finished 
@@ -53,7 +56,7 @@
 		ORDER BY
 			id
 	</select>
-	<select id="count" resultType="long">
+	<select id="count" resultType="_long">
 		SELECT count(*) FROM todo
 	</select>
 
