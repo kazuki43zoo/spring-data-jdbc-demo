@@ -26,7 +26,7 @@
 	<select id="existsById" resultType="_boolean">
 		SELECT count(*) FROM todo WHERE id = #{id}
 	</select>
-	<select id="findById" resultType="com.example.demo.domain.Todo">
+	<select id="findById" resultType="Todo">
 		SELECT
 			id, title, details, finished 
 		FROM
@@ -34,7 +34,7 @@
 		WHERE
 			id = #{id}
 	</select>
-	<select id="findAll" resultType="com.example.demo.domain.Todo">
+	<select id="findAll" resultType="Todo">
 		SELECT
 			id, title, details, finished
 		FROM
@@ -42,7 +42,7 @@
 		ORDER BY
 			id
 	</select>
-	<select id="findAllById" resultType="com.example.demo.domain.Todo">
+	<select id="findAllById" resultType="Todo">
 		SELECT
 			id, title, details, finished
 		FROM
@@ -61,7 +61,7 @@
 	</select>
 
 	<!-- statements for custom repository method -->
-	<select id="findAllByFinished" resultType="com.example.demo.domain.Todo">
+	<select id="findAllByFinished" resultType="Todo">
 		SELECT
 			id, title, details, finished
 		FROM

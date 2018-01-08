@@ -14,11 +14,11 @@ import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 
 @SpringBootTest(classes = { SpringDataJdbcMybatisDemoApplication.class,
-		SpringDataJdbcSpringJdbcImplTests.Config.class })
+		SpringDataJdbcSpringJdbcImplTests.SpringDataJdbcConfig.class })
 public class SpringDataJdbcSpringJdbcImplTests extends AbstractSpringDataJdbcTests {
 
 	@EnableJdbcRepositories(repositoryImplementationPostfix = "SpringJdbcImpl")
-	public static class Config {
+	public static class SpringDataJdbcConfig {
 
 		@Bean
 		DataAccessStrategy dataAccessStrategy(NamedParameterJdbcOperations namedParameterJdbcOperations,
