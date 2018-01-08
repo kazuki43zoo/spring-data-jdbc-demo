@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Optional;
@@ -178,6 +179,50 @@ public abstract class AbstractSpringDataJdbcTests {
 		todoRepository.deleteAll();
 
 		Assertions.assertThat(todoRepository.count()).isEqualTo(0);
+	}
+
+	@Test
+	public void saveAll() {
+		Todo todo1 = new Todo();
+		todo1.setTitle("飲み会");
+		todo1.setDetails("銀座 19:00");
+
+		Todo todo2 = new Todo();
+		todo2.setTitle("ランチ");
+		todo2.setDetails("銀座 12:30");
+		todo2.setFinished(true);
+
+		todoRepository.saveAll(Arrays.asList(todo1, todo2));
+
+		Assertions.assertThat(todoRepository.count()).isEqualTo(2);
+
+		Optional<Todo> todo = todoRepository.findById(todo1.getId());
+		Assertions.assertThat(todo.isPresent()).isTrue();
+		Assertions.assertThat(todo.get().getId()).isEqualTo(todo1.getId());
+		Assertions.assertThat(todo.get().getTitle()).isEqualTo(todo1.getTitle());
+		Assertions.assertThat(todo.get().getDetails()).isEqualTo(todo1.getDetails());
+		Assertions.assertThat(todo.get().isFinished()).isFalse();
+
+		todo = todoRepository.findById(todo2.getId());
+		Assertions.assertThat(todo.isPresent()).isTrue();
+		Assertions.assertThat(todo.get().getId()).isEqualTo(todo2.getId());
+		Assertions.assertThat(todo.get().getTitle()).isEqualTo(todo2.getTitle());
+		Assertions.assertThat(todo.get().getDetails()).isEqualTo(todo2.getDetails());
+		Assertions.assertThat(todo.get().isFinished()).isTrue();
+
+		todo1.setFinished(true);
+		todo2.setFinished(false);
+
+		todoRepository.saveAll(Arrays.asList(todo1, todo2));
+
+		todo = todoRepository.findById(todo1.getId());
+		Assertions.assertThat(todo.isPresent()).isTrue();
+		Assertions.assertThat(todo.get().isFinished()).isTrue();
+
+		todo = todoRepository.findById(todo2.getId());
+		Assertions.assertThat(todo.isPresent()).isTrue();
+		Assertions.assertThat(todo.get().isFinished()).isFalse();
+
 	}
 
 	@Test
