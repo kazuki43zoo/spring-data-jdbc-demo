@@ -21,7 +21,7 @@ import com.example.demo.repository.TodoRepository;
 public abstract class AbstractSpringDataJdbcTests {
 
 	@Autowired
-	private TodoRepository todoRepository;
+	protected TodoRepository todoRepository;
 
 	@Before
 	public void cleanup() {
