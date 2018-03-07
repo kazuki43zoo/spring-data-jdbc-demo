@@ -108,6 +108,17 @@ public class SpringDataJdbcSpringJdbcImplTests extends AbstractSpringDataJdbcTes
 	}
 
 	@Test
+	public void queryMethodForReturnTypeIsBoolean() {
+		Todo newTodo = new Todo();
+		newTodo.setTitle("飲み会");
+		newTodo.setDetails("銀座 19:00");
+		super.todoRepository.save(newTodo);
+
+		Assertions.assertThat(super.todoRepository.existsByFinished(false)).isTrue();
+		Assertions.assertThat(super.todoRepository.existsByFinished(true)).isFalse();
+	}
+
+	@Test
 	public void queryMethodForReturnTypeIsLocalDateTime() {
 		Assertions.assertThat(super.todoRepository.currentDateTime()).isBeforeOrEqualTo(LocalDateTime.now());
 	}

@@ -28,6 +28,9 @@ public interface TodoRepository extends CrudRepository<Todo, Integer>, Customize
     @Query("SELECT count(*) FROM todo WHERE finished = :finished")
     long countByFinished(@Param("finished") Boolean finished);
 
+    @Query("SELECT count(*) FROM todo WHERE finished = :finished")
+    boolean existsByFinished(@Param("finished") Boolean finished);
+
     @Query("SELECT current_timestamp()")
     LocalDateTime currentDateTime();
 
