@@ -2,6 +2,7 @@ package com.example.demo;
 
 import java.sql.Clob;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -93,6 +94,22 @@ public class SpringDataJdbcSpringJdbcImplTests extends AbstractSpringDataJdbcTes
 
 		super.todoRepository.deleteAll();
 		Assertions.assertThat(super.todoRepository.findAllList()).isEmpty();
+	}
+
+	@Test
+	public void queryMethodForReturnTypeIsLong() {
+		Todo newTodo = new Todo();
+		newTodo.setTitle("飲み会");
+		newTodo.setDetails("銀座 19:00");
+		super.todoRepository.save(newTodo);
+
+		Assertions.assertThat(super.todoRepository.countByFinished(false)).isEqualTo(1);
+		Assertions.assertThat(super.todoRepository.countByFinished(true)).isEqualTo(0);
+	}
+
+	@Test
+	public void queryMethodForReturnTypeIsLocalDateTime() {
+		Assertions.assertThat(super.todoRepository.currentDateTime()).isBeforeOrEqualTo(LocalDateTime.now());
 	}
 
 	@EnableJdbcRepositories(repositoryImplementationPostfix = "SpringJdbcImpl")
