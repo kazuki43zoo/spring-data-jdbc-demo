@@ -126,6 +126,17 @@ public class SpringDataJdbcSpringJdbcImplTests extends AbstractSpringDataJdbcTes
 		Assertions.assertThat(super.todoRepository.currentDateTime()).isBeforeOrEqualTo(LocalDateTime.now());
 	}
 
+	@Test
+	public void modifyingQuery() {
+		Todo newTodo = new Todo();
+		newTodo.setTitle("飲み会");
+		newTodo.setDetails("銀座 19:00");
+		super.todoRepository.save(newTodo);
+		Assertions.assertThat(super.todoRepository.updateFinishedById(newTodo.getId(), true)).isTrue();
+		Assertions.assertThat(super.todoRepository.findById(newTodo.getId()).get().isFinished()).isTrue();
+
+	}
+
 	@EnableJdbcRepositories(repositoryImplementationPostfix = "SpringJdbcImpl")
 	public static class SpringDataJdbcConfig {
 

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -33,5 +34,9 @@ public interface TodoRepository extends CrudRepository<Todo, Integer>, Customize
 
     @Query("SELECT current_timestamp()")
     LocalDateTime currentDateTime();
+
+    @Modifying
+    @Query("UPDATE todo SET finished = :finished WHERE id = :id")
+    boolean updateFinishedById(@Param("id") Integer id, @Param("finished") boolean finished);
 
 }
