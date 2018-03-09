@@ -1,10 +1,12 @@
 package com.example.demo;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Optional;
 
+import com.example.demo.domain.Activity;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
@@ -256,5 +258,69 @@ public abstract class AbstractSpringDataJdbcTests {
 		Assertions.assertThat(todos.hasNext()).isFalse();
 
 	}
+
+@Test
+public void oneToMany() {
+
+	Todo newTodo = new Todo();
+	newTodo.setTitle("飲み会");
+	newTodo.setDetails("銀座 19:00");
+	Activity activity1 = new Activity();
+	activity1.setContent("Created");
+	activity1.setAt(LocalDateTime.now());
+
+	Activity activity2 = new Activity();
+	activity2.setContent("Started");
+	activity2.setAt(LocalDateTime.now());
+
+	newTodo.setActivities(Arrays.asList(activity1, activity2));
+
+	// Insert
+	todoRepository.save(newTodo);
+
+	// Assert for inserting
+	Optional<Todo> loadedTodo = todoRepository.findById(newTodo.getId());
+	Assertions.assertThat(loadedTodo.isPresent()).isTrue();
+	loadedTodo.ifPresent(todo -> {
+		Assertions.assertThat(todo.getId()).isEqualTo(newTodo.getId());
+		Assertions.assertThat(todo.getTitle()).isEqualTo(newTodo.getTitle());
+		Assertions.assertThat(todo.getDetails()).isEqualTo(newTodo.getDetails());
+		Assertions.assertThat(todo.isFinished()).isFalse();
+		Assertions.assertThat(todo.getActivities()).hasSize(2);
+		Assertions.assertThat(todo.getActivities().get(0).getContent()).isEqualTo(activity1.getContent());
+		Assertions.assertThat(todo.getActivities().get(1).getContent()).isEqualTo(activity2.getContent());
+
+	});
+
+	Activity activity3 = new Activity();
+	activity3.setContent("Changed Title");
+	activity3.setAt(LocalDateTime.now());
+
+	loadedTodo.ifPresent(todo -> {
+		todo.setTitle("[Change] " + todo.getTitle());
+		todo.getActivities().add(activity3);
+	});
+
+	// Update & (Delete & Insert)
+	todoRepository.save(loadedTodo.get());
+	loadedTodo = todoRepository.findById(newTodo.getId());
+
+	// Assert for updating
+	Assertions.assertThat(loadedTodo.isPresent()).isTrue();
+	loadedTodo.ifPresent(todo -> {
+		Assertions.assertThat(todo.getTitle()).isEqualTo("[Change] " + newTodo.getTitle());
+		Assertions.assertThat(todo.getActivities()).hasSize(3);
+		Assertions.assertThat(todo.getActivities().get(0).getContent()).isEqualTo(activity1.getContent());
+		Assertions.assertThat(todo.getActivities().get(1).getContent()).isEqualTo(activity2.getContent());
+		Assertions.assertThat(todo.getActivities().get(2).getContent()).isEqualTo(activity3.getContent());
+	});
+
+	// Delete
+	todoRepository.deleteById(newTodo.getId());
+
+	// Assert for deleting
+	Assertions.assertThat(todoRepository.findById(newTodo.getId())).isNotPresent();
+
+}
 
 }

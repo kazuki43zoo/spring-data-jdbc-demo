@@ -2,12 +2,15 @@ package com.example.demo.domain;
 
 import org.springframework.data.annotation.Id;
 
+import java.util.List;
+
 public class Todo {
 	@Id
 	private int id;
 	private String title;
 	private String details;
 	private boolean finished;
+	private List<Activity> activities;
 
 	public int getId() {
 		return id;
@@ -41,4 +44,11 @@ public class Todo {
 		this.finished = finished;
 	}
 
+	public List<Activity> getActivities() {
+		return activities;
+	}
+
+	public void setActivities(List<Activity> activities) {
+		this.activities = activities;
+	}
 }

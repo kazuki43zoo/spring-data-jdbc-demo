@@ -15,7 +15,10 @@ import org.springframework.data.jdbc.core.DataAccessStrategy;
 import org.springframework.data.jdbc.core.DefaultDataAccessStrategy;
 import org.springframework.data.jdbc.core.SqlGeneratorSource;
 import org.springframework.data.jdbc.mapping.model.ConversionCustomizer;
+import org.springframework.data.jdbc.mapping.model.DefaultNamingStrategy;
 import org.springframework.data.jdbc.mapping.model.JdbcMappingContext;
+import org.springframework.data.jdbc.mapping.model.JdbcPersistentProperty;
+import org.springframework.data.jdbc.mapping.model.NamingStrategy;
 import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 
@@ -144,6 +147,20 @@ public class SpringDataJdbcSpringJdbcImplTests extends AbstractSpringDataJdbcTes
 						throw new IllegalStateException(e);
 					}
 				});
+			};
+		}
+
+		@Bean
+		NamingStrategy namingStrategy() {
+			return new DefaultNamingStrategy(){
+				@Override
+				public String getReverseColumnName(JdbcPersistentProperty property) {
+					return super.getReverseColumnName(property).toLowerCase() + "_id";
+				}
+				@Override
+				public String getKeyColumn(JdbcPersistentProperty property) {
+					return "sort_order";
+				}
 			};
 		}
 

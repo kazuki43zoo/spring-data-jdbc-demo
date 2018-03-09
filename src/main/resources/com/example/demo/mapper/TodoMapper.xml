@@ -20,20 +20,38 @@
 	<delete id="delete">
 		DELETE FROM todo WHERE id = #{id}
 	</delete>
+	<delete id="delete-activities">
+		DELETE FROM activity WHERE todo_id = #{id}
+	</delete>
 	<delete id="deleteAll">
 		DELETE FROM todo
 	</delete>
 	<select id="existsById" resultType="_boolean">
 		SELECT count(*) FROM todo WHERE id = #{id}
 	</select>
-	<select id="findById" resultType="Todo">
+	<select id="findById" resultMap="todoMap">
 		SELECT
-			id, title, details, finished 
+			t.id, t.title, t.details, t.finished
+			, a.id as activity_id, a.content as activity_content, a.at as activity_at
 		FROM
-			todo
+			todo t
+		LEFT OUTER JOIN activity a ON a.todo_id = t.id
 		WHERE
-			id = #{id}
+			t.id = #{id}
+		ORDER BY
+			a.sort_order
 	</select>
+	<resultMap id="todoMap" type="Todo">
+		<id column="id" property="id"/>
+		<result column="title" property="title"/>
+		<result column="details" property="details"/>
+		<result column="finished" property="finished"/>
+		<collection property="activities" columnPrefix="activity_" ofType="Activity">
+			<id column="id" property="id"/>
+			<result column="content" property="content"/>
+			<result column="at" property="at"/>
+		</collection>
+	</resultMap>
 	<select id="findAll" resultType="Todo">
 		SELECT
 			id, title, details, finished
