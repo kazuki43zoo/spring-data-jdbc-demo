@@ -4,7 +4,6 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jdbc.core.DataAccessStrategy;
-import org.springframework.data.jdbc.mapping.model.DefaultNamingStrategy;
 import org.springframework.data.jdbc.mapping.model.JdbcPersistentProperty;
 import org.springframework.data.jdbc.mapping.model.NamingStrategy;
 import org.springframework.data.jdbc.mybatis.MyBatisDataAccessStrategy;
@@ -23,10 +22,10 @@ public class SpringDataJdbcMyBatisImplTests extends AbstractSpringDataJdbcTests 
 
 		@Bean
 		NamingStrategy namingStrategy() {
-			return new DefaultNamingStrategy(){
+			return new NamingStrategy(){
 				@Override
 				public String getReverseColumnName(JdbcPersistentProperty property) {
-					return super.getReverseColumnName(property).toLowerCase() + "_id";
+					return NamingStrategy.super.getReverseColumnName(property).toLowerCase() + "_id";
 				}
 				@Override
 				public String getKeyColumn(JdbcPersistentProperty property) {
