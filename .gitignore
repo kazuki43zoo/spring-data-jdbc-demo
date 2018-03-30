@@ -7,5 +7,5 @@ target
 .classpath
 .settings
 
-.mvn/wrapper/maven-wapper.jar
+.mvn/wrapper/maven-wrapper.jar
 .mvn/wrapper/MavenWrapperDownloader.java
