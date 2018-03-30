@@ -6,3 +6,6 @@ target
 .project
 .classpath
 .settings
+
+.mvn/wrapper/maven-wapper.jar
+.mvn/wrapper/MavenWrapperDownloader.java
