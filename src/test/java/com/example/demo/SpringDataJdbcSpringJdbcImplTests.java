@@ -140,10 +140,8 @@ public class SpringDataJdbcSpringJdbcImplTests extends AbstractSpringDataJdbcTes
 	public static class SpringDataJdbcConfig {
 
 		@Bean
-		DataAccessStrategy dataAccessStrategy(NamedParameterJdbcOperations namedParameterJdbcOperations,
-				JdbcMappingContext context) {
-			return new DefaultDataAccessStrategy(new SqlGeneratorSource(context), namedParameterJdbcOperations,
-					context);
+		DataAccessStrategy dataAccessStrategy(JdbcMappingContext context) {
+			return new DefaultDataAccessStrategy(new SqlGeneratorSource(context), context);
 		}
 
 		@Bean
