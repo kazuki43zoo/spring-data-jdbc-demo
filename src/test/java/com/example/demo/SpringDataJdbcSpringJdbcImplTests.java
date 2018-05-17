@@ -12,16 +12,11 @@ import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.AuditorAware;
-import org.springframework.data.jdbc.core.DataAccessStrategy;
-import org.springframework.data.jdbc.core.DefaultDataAccessStrategy;
-import org.springframework.data.jdbc.core.SqlGeneratorSource;
 import org.springframework.data.jdbc.mapping.model.ConversionCustomizer;
-import org.springframework.data.jdbc.mapping.model.JdbcMappingContext;
 import org.springframework.data.jdbc.mapping.model.JdbcPersistentProperty;
 import org.springframework.data.jdbc.mapping.model.NamingStrategy;
 import org.springframework.data.jdbc.repository.config.EnableJdbcAuditing;
 import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 
 import com.example.demo.domain.Todo;
 
@@ -141,11 +136,6 @@ public class SpringDataJdbcSpringJdbcImplTests extends AbstractSpringDataJdbcTes
 	@EnableJdbcAuditing
 	@EnableJdbcRepositories(repositoryImplementationPostfix = "SpringJdbcImpl")
 	public static class SpringDataJdbcConfig {
-
-		@Bean
-		DataAccessStrategy dataAccessStrategy(JdbcMappingContext context) {
-			return new DefaultDataAccessStrategy(new SqlGeneratorSource(context), context);
-		}
 
 		@Bean
 		ConversionCustomizer conversionCustomizer() {
