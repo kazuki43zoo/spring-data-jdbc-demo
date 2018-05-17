@@ -13,6 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.AuditorAware;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,6 +35,7 @@ public abstract class AbstractSpringDataJdbcTests {
 	@Test
 	public void insertAndFineById() {
 		LocalDateTime now = LocalDateTime.now();
+		MyAuditorAware.currentUser.set("user1");
 
 		Todo newTodo = new Todo();
 		newTodo.setTitle("飲み会");
@@ -47,11 +49,15 @@ public abstract class AbstractSpringDataJdbcTests {
 		Assertions.assertThat(todo.get().getDetails()).isEqualTo(newTodo.getDetails());
 		Assertions.assertThat(todo.get().isFinished()).isFalse();
 		Assertions.assertThat(todo.get().getCreatedAt()).isAfterOrEqualTo(now);
+		Assertions.assertThat(todo.get().getCreatedBy()).isEqualTo("user1");
 		Assertions.assertThat(todo.get().getLastUpdatedAt()).isEqualTo(todo.get().getCreatedAt());
+		Assertions.assertThat(todo.get().getLastUpdatedBy()).isEqualTo("user1");
 	}
 
 	@Test
 	public void update() throws InterruptedException {
+		MyAuditorAware.currentUser.set("user1");
+
 		Todo newTodo = new Todo();
 		newTodo.setTitle("飲み会");
 		newTodo.setDetails("銀座 19:00");
@@ -61,6 +67,7 @@ public abstract class AbstractSpringDataJdbcTests {
 
 		TimeUnit.MILLISECONDS.sleep(100);
 		LocalDateTime now = LocalDateTime.now();
+		MyAuditorAware.currentUser.set("user2");
 
 		newTodo.setTitle(newTodo.getTitle() + " Edit");
 		newTodo.setDetails(newTodo.getDetails() + " Edit");
@@ -75,7 +82,9 @@ public abstract class AbstractSpringDataJdbcTests {
 		Assertions.assertThat(todo.get().getDetails()).isEqualTo(newTodo.getDetails());
 		Assertions.assertThat(todo.get().isFinished()).isTrue();
 		Assertions.assertThat(todo.get().getCreatedAt()).isEqualTo(createdAtOnInsert);
+		Assertions.assertThat(todo.get().getCreatedBy()).isEqualTo("user1");
 		Assertions.assertThat(todo.get().getLastUpdatedAt()).isAfterOrEqualTo(now);
+		Assertions.assertThat(todo.get().getLastUpdatedBy()).isEqualTo("user2");
 	}
 
 	@Test

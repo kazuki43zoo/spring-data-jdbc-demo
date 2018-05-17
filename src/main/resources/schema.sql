@@ -4,7 +4,9 @@ CREATE TABLE IF NOT EXISTS todo (
 	,details TEXT
 	,finished BOOLEAN NOT NULL
 	,created_at TIMESTAMP
+	,created_by VARCHAR(64)
 	,last_updated_at TIMESTAMP
+	,last_updated_by VARCHAR(64)
 );
 
 CREATE TABLE IF NOT EXISTS activity (

@@ -11,6 +11,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jdbc.core.DataAccessStrategy;
 import org.springframework.data.jdbc.core.DefaultDataAccessStrategy;
 import org.springframework.data.jdbc.core.SqlGeneratorSource;
@@ -172,6 +173,11 @@ public class SpringDataJdbcSpringJdbcImplTests extends AbstractSpringDataJdbcTes
 					return "sort_order";
 				}
 			};
+		}
+
+		@Bean
+		AuditorAware<String> auditorAware() {
+			return new MyAuditorAware();
 		}
 
 	}

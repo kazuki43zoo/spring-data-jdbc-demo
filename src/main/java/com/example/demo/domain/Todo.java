@@ -1,7 +1,9 @@
 package com.example.demo.domain;
 
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jdbc.mapping.model.Column;
 
@@ -17,9 +19,15 @@ public class Todo {
 	@CreatedDate
 	@Column("created_at")
 	private LocalDateTime createdAt;
+	@CreatedBy
+	@Column("created_by")
+	private String createdBy;
 	@LastModifiedDate
 	@Column("last_updated_at")
 	private LocalDateTime lastUpdatedAt;
+	@LastModifiedBy
+	@Column("last_updated_by")
+	private String lastUpdatedBy;
 	private List<Activity> activities;
 
 	public Integer getId() {
@@ -62,12 +70,28 @@ public class Todo {
 		this.createdAt = createdAt;
 	}
 
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
 	public LocalDateTime getLastUpdatedAt() {
 		return lastUpdatedAt;
 	}
 
 	public void setLastUpdatedAt(LocalDateTime lastUpdatedAt) {
 		this.lastUpdatedAt = lastUpdatedAt;
+	}
+
+	public String getLastUpdatedBy() {
+		return lastUpdatedBy;
+	}
+
+	public void setLastUpdatedBy(String lastUpdatedBy) {
+		this.lastUpdatedBy = lastUpdatedBy;
 	}
 
 	public List<Activity> getActivities() {
