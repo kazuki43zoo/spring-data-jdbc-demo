@@ -1,22 +1,32 @@
 package com.example.demo.domain;
 
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jdbc.mapping.model.Column;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class Todo {
 	@Id
-	private int id;
+	private Integer id;
 	private String title;
 	private String details;
 	private boolean finished;
+	@CreatedDate
+	@Column("created_at")
+	private LocalDateTime createdAt;
+	@LastModifiedDate
+	@Column("last_updated_at")
+	private LocalDateTime lastUpdatedAt;
 	private List<Activity> activities;
 
-	public int getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
@@ -42,6 +52,22 @@ public class Todo {
 
 	public void setFinished(boolean finished) {
 		this.finished = finished;
+	}
+
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	public LocalDateTime getLastUpdatedAt() {
+		return lastUpdatedAt;
+	}
+
+	public void setLastUpdatedAt(LocalDateTime lastUpdatedAt) {
+		this.lastUpdatedAt = lastUpdatedAt;
 	}
 
 	public List<Activity> getActivities() {

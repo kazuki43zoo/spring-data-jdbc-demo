@@ -7,12 +7,14 @@ import org.springframework.data.jdbc.core.DataAccessStrategy;
 import org.springframework.data.jdbc.mapping.model.JdbcPersistentProperty;
 import org.springframework.data.jdbc.mapping.model.NamingStrategy;
 import org.springframework.data.jdbc.mybatis.MyBatisDataAccessStrategy;
+import org.springframework.data.jdbc.repository.config.EnableJdbcAuditing;
 import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
 
 @SpringBootTest(classes = { SpringDataJdbcMybatisDemoApplication.class,
 		SpringDataJdbcMyBatisImplTests.SpringDataJdbcConfig.class })
 public class SpringDataJdbcMyBatisImplTests extends AbstractSpringDataJdbcTests {
 
+	@EnableJdbcAuditing
 	@EnableJdbcRepositories(repositoryImplementationPostfix = "MyBatisImpl")
 	public static class SpringDataJdbcConfig {
 		@Bean

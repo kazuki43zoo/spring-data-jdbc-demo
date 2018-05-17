@@ -3,6 +3,8 @@ CREATE TABLE IF NOT EXISTS todo (
 	,title TEXT NOT NULL
 	,details TEXT
 	,finished BOOLEAN NOT NULL
+	,created_at TIMESTAMP
+	,last_updated_at TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS activity (

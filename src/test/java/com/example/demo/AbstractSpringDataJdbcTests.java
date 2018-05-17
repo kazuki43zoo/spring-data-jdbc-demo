@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import com.example.demo.domain.Activity;
 import org.assertj.core.api.Assertions;
@@ -32,6 +33,8 @@ public abstract class AbstractSpringDataJdbcTests {
 
 	@Test
 	public void insertAndFineById() {
+		LocalDateTime now = LocalDateTime.now();
+
 		Todo newTodo = new Todo();
 		newTodo.setTitle("飲み会");
 		newTodo.setDetails("銀座 19:00");
@@ -43,14 +46,21 @@ public abstract class AbstractSpringDataJdbcTests {
 		Assertions.assertThat(todo.get().getTitle()).isEqualTo(newTodo.getTitle());
 		Assertions.assertThat(todo.get().getDetails()).isEqualTo(newTodo.getDetails());
 		Assertions.assertThat(todo.get().isFinished()).isFalse();
+		Assertions.assertThat(todo.get().getCreatedAt()).isAfterOrEqualTo(now);
+		Assertions.assertThat(todo.get().getLastUpdatedAt()).isEqualTo(todo.get().getCreatedAt());
 	}
 
 	@Test
-	public void update() {
+	public void update() throws InterruptedException {
 		Todo newTodo = new Todo();
 		newTodo.setTitle("飲み会");
 		newTodo.setDetails("銀座 19:00");
 		todoRepository.save(newTodo);
+
+		LocalDateTime createdAtOnInsert = newTodo.getCreatedAt();
+
+		TimeUnit.MILLISECONDS.sleep(100);
+		LocalDateTime now = LocalDateTime.now();
 
 		newTodo.setTitle(newTodo.getTitle() + " Edit");
 		newTodo.setDetails(newTodo.getDetails() + " Edit");
@@ -64,6 +74,8 @@ public abstract class AbstractSpringDataJdbcTests {
 		Assertions.assertThat(todo.get().getTitle()).isEqualTo(newTodo.getTitle());
 		Assertions.assertThat(todo.get().getDetails()).isEqualTo(newTodo.getDetails());
 		Assertions.assertThat(todo.get().isFinished()).isTrue();
+		Assertions.assertThat(todo.get().getCreatedAt()).isEqualTo(createdAtOnInsert);
+		Assertions.assertThat(todo.get().getLastUpdatedAt()).isAfterOrEqualTo(now);
 	}
 
 	@Test
@@ -204,6 +216,8 @@ public abstract class AbstractSpringDataJdbcTests {
 		Assertions.assertThat(todo.get().getTitle()).isEqualTo(todo1.getTitle());
 		Assertions.assertThat(todo.get().getDetails()).isEqualTo(todo1.getDetails());
 		Assertions.assertThat(todo.get().isFinished()).isFalse();
+		Assertions.assertThat(todo.get().getCreatedAt()).isNotNull();
+		Assertions.assertThat(todo.get().getLastUpdatedAt()).isNotNull();
 
 		todo = todoRepository.findById(todo2.getId());
 		Assertions.assertThat(todo.isPresent()).isTrue();
@@ -211,6 +225,8 @@ public abstract class AbstractSpringDataJdbcTests {
 		Assertions.assertThat(todo.get().getTitle()).isEqualTo(todo2.getTitle());
 		Assertions.assertThat(todo.get().getDetails()).isEqualTo(todo2.getDetails());
 		Assertions.assertThat(todo.get().isFinished()).isTrue();
+		Assertions.assertThat(todo.get().getCreatedAt()).isNotNull();
+		Assertions.assertThat(todo.get().getLastUpdatedAt()).isNotNull();
 
 		todo1.setFinished(true);
 		todo2.setFinished(false);
@@ -220,10 +236,16 @@ public abstract class AbstractSpringDataJdbcTests {
 		todo = todoRepository.findById(todo1.getId());
 		Assertions.assertThat(todo.isPresent()).isTrue();
 		Assertions.assertThat(todo.get().isFinished()).isTrue();
+		Assertions.assertThat(todo.get().getCreatedAt()).isNotNull();
+		Assertions.assertThat(todo.get().getLastUpdatedAt()).isNotNull();
+		Assertions.assertThat(todo.get().getCreatedAt()).isNotEqualTo(todo.get().getLastUpdatedAt());
 
 		todo = todoRepository.findById(todo2.getId());
 		Assertions.assertThat(todo.isPresent()).isTrue();
 		Assertions.assertThat(todo.get().isFinished()).isFalse();
+		Assertions.assertThat(todo.get().getCreatedAt()).isNotNull();
+		Assertions.assertThat(todo.get().getLastUpdatedAt()).isNotNull();
+		Assertions.assertThat(todo.get().getCreatedAt()).isNotEqualTo(todo.get().getLastUpdatedAt());
 
 	}
 
@@ -259,68 +281,73 @@ public abstract class AbstractSpringDataJdbcTests {
 
 	}
 
-@Test
-public void oneToMany() {
+	@Test
+	public void oneToMany() {
 
-	Todo newTodo = new Todo();
-	newTodo.setTitle("飲み会");
-	newTodo.setDetails("銀座 19:00");
-	Activity activity1 = new Activity();
-	activity1.setContent("Created");
-	activity1.setAt(LocalDateTime.now());
+		Todo newTodo = new Todo();
+		newTodo.setTitle("飲み会");
+		newTodo.setDetails("銀座 19:00");
+		Activity activity1 = new Activity();
+		activity1.setContent("Created");
+		activity1.setAt(LocalDateTime.now());
 
-	Activity activity2 = new Activity();
-	activity2.setContent("Started");
-	activity2.setAt(LocalDateTime.now());
+		Activity activity2 = new Activity();
+		activity2.setContent("Started");
+		activity2.setAt(LocalDateTime.now());
 
-	newTodo.setActivities(Arrays.asList(activity1, activity2));
+		newTodo.setActivities(Arrays.asList(activity1, activity2));
 
-	// Insert
-	todoRepository.save(newTodo);
+		// Insert
+		todoRepository.save(newTodo);
 
-	// Assert for inserting
-	Optional<Todo> loadedTodo = todoRepository.findById(newTodo.getId());
-	Assertions.assertThat(loadedTodo.isPresent()).isTrue();
-	loadedTodo.ifPresent(todo -> {
-		Assertions.assertThat(todo.getId()).isEqualTo(newTodo.getId());
-		Assertions.assertThat(todo.getTitle()).isEqualTo(newTodo.getTitle());
-		Assertions.assertThat(todo.getDetails()).isEqualTo(newTodo.getDetails());
-		Assertions.assertThat(todo.isFinished()).isFalse();
-		Assertions.assertThat(todo.getActivities()).hasSize(2);
-		Assertions.assertThat(todo.getActivities().get(0).getContent()).isEqualTo(activity1.getContent());
-		Assertions.assertThat(todo.getActivities().get(1).getContent()).isEqualTo(activity2.getContent());
+		// Assert for inserting
+		Optional<Todo> loadedTodo = todoRepository.findById(newTodo.getId());
+		Assertions.assertThat(loadedTodo.isPresent()).isTrue();
+		loadedTodo.ifPresent(todo -> {
+			Assertions.assertThat(todo.getId()).isEqualTo(newTodo.getId());
+			Assertions.assertThat(todo.getTitle()).isEqualTo(newTodo.getTitle());
+			Assertions.assertThat(todo.getDetails()).isEqualTo(newTodo.getDetails());
+			Assertions.assertThat(todo.isFinished()).isFalse();
+			Assertions.assertThat(todo.getCreatedAt()).isNotNull();
+			Assertions.assertThat(todo.getLastUpdatedAt()).isNotNull();
+			Assertions.assertThat(todo.getActivities()).hasSize(2);
+			Assertions.assertThat(todo.getActivities().get(0).getContent()).isEqualTo(activity1.getContent());
+			Assertions.assertThat(todo.getActivities().get(1).getContent()).isEqualTo(activity2.getContent());
 
-	});
+		});
 
-	Activity activity3 = new Activity();
-	activity3.setContent("Changed Title");
-	activity3.setAt(LocalDateTime.now());
+		Activity activity3 = new Activity();
+		activity3.setContent("Changed Title");
+		activity3.setAt(LocalDateTime.now());
 
-	loadedTodo.ifPresent(todo -> {
-		todo.setTitle("[Change] " + todo.getTitle());
-		todo.getActivities().add(activity3);
-	});
+		loadedTodo.ifPresent(todo -> {
+			todo.setTitle("[Change] " + todo.getTitle());
+			todo.getActivities().add(activity3);
+		});
 
-	// Update & (Delete & Insert)
-	todoRepository.save(loadedTodo.get());
-	loadedTodo = todoRepository.findById(newTodo.getId());
+		// Update & (Delete & Insert)
+		todoRepository.save(loadedTodo.get());
+		loadedTodo = todoRepository.findById(newTodo.getId());
 
-	// Assert for updating
-	Assertions.assertThat(loadedTodo.isPresent()).isTrue();
-	loadedTodo.ifPresent(todo -> {
-		Assertions.assertThat(todo.getTitle()).isEqualTo("[Change] " + newTodo.getTitle());
-		Assertions.assertThat(todo.getActivities()).hasSize(3);
-		Assertions.assertThat(todo.getActivities().get(0).getContent()).isEqualTo(activity1.getContent());
-		Assertions.assertThat(todo.getActivities().get(1).getContent()).isEqualTo(activity2.getContent());
-		Assertions.assertThat(todo.getActivities().get(2).getContent()).isEqualTo(activity3.getContent());
-	});
+		// Assert for updating
+		Assertions.assertThat(loadedTodo.isPresent()).isTrue();
+		loadedTodo.ifPresent(todo -> {
+			Assertions.assertThat(todo.getTitle()).isEqualTo("[Change] " + newTodo.getTitle());
+			Assertions.assertThat(todo.getCreatedAt()).isNotNull();
+			Assertions.assertThat(todo.getLastUpdatedAt()).isNotNull();
+			Assertions.assertThat(todo.getCreatedAt()).isNotEqualTo(todo.getLastUpdatedAt());
+			Assertions.assertThat(todo.getActivities()).hasSize(3);
+			Assertions.assertThat(todo.getActivities().get(0).getContent()).isEqualTo(activity1.getContent());
+			Assertions.assertThat(todo.getActivities().get(1).getContent()).isEqualTo(activity2.getContent());
+			Assertions.assertThat(todo.getActivities().get(2).getContent()).isEqualTo(activity3.getContent());
+		});
 
-	// Delete
-	todoRepository.deleteById(newTodo.getId());
+		// Delete
+		todoRepository.deleteById(newTodo.getId());
 
-	// Assert for deleting
-	Assertions.assertThat(todoRepository.findById(newTodo.getId())).isNotPresent();
+		// Assert for deleting
+		Assertions.assertThat(todoRepository.findById(newTodo.getId())).isNotPresent();
 
-}
+	}
 
 }

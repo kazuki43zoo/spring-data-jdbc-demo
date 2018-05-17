@@ -7,13 +7,13 @@
 	<!-- statements for CrudRepository method -->
 	<insert id="insert" useGeneratedKeys="true" keyProperty="instance.id">
 		INSERT INTO todo 
-			(title, details, finished)
+			(title, details, finished, created_at, last_updated_at)
 		VALUES 
-			(#{instance.title}, #{instance.details}, #{instance.finished})
+			(#{instance.title}, #{instance.details}, #{instance.finished}, #{instance.createdAt}, #{instance.lastUpdatedAt})
 	</insert>
 	<update id="update">
 		UPDATE todo SET
-			title = #{instance.title}, details = #{instance.details}, finished = #{instance.finished}
+			title = #{instance.title}, details = #{instance.details}, finished = #{instance.finished}, last_updated_at = #{instance.lastUpdatedAt}
 		WHERE
 			id = #{instance.id}
 	</update>
@@ -31,7 +31,7 @@
 	</select>
 	<select id="findById" resultMap="todoMap">
 		SELECT
-			t.id, t.title, t.details, t.finished
+			t.id, t.title, t.details, t.finished, t.created_at, t.last_updated_at
 			, a.id as activity_id, a.content as activity_content, a.at as activity_at
 		FROM
 			todo t
@@ -46,6 +46,8 @@
 		<result column="title" property="title"/>
 		<result column="details" property="details"/>
 		<result column="finished" property="finished"/>
+		<result column="created_at" property="createdAt"/>
+		<result column="last_updated_at" property="lastUpdatedAt"/>
 		<collection property="activities" columnPrefix="activity_" ofType="Activity">
 			<id column="id" property="id"/>
 			<result column="content" property="content"/>
@@ -54,7 +56,7 @@
 	</resultMap>
 	<select id="findAll" resultType="Todo">
 		SELECT
-			id, title, details, finished
+			id, title, details, finished, created_at, last_updated_at
 		FROM
 			todo
 		ORDER BY
@@ -62,7 +64,7 @@
 	</select>
 	<select id="findAllById" resultType="Todo">
 		SELECT
-			id, title, details, finished
+			id, title, details, finished, created_at, last_updated_at
 		FROM
 			todo
 		<where>
@@ -81,7 +83,7 @@
 	<!-- statements for custom repository method -->
 	<select id="findAllByFinished" resultType="Todo">
 		SELECT
-			id, title, details, finished
+			id, title, details, finished, created_at, last_updated_at
 		FROM
 			todo
 		WHERE
