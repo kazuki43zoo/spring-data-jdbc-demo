@@ -12,9 +12,9 @@ import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.AuditorAware;
-import org.springframework.data.jdbc.mapping.model.ConversionCustomizer;
-import org.springframework.data.jdbc.mapping.model.JdbcPersistentProperty;
-import org.springframework.data.jdbc.mapping.model.NamingStrategy;
+import org.springframework.data.jdbc.core.mapping.ConversionCustomizer;
+import org.springframework.data.jdbc.core.mapping.JdbcPersistentProperty;
+import org.springframework.data.jdbc.core.mapping.NamingStrategy;
 import org.springframework.data.jdbc.repository.config.EnableJdbcAuditing;
 import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
 
