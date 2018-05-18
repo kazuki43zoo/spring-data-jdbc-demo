@@ -12,7 +12,7 @@ import java.util.List;
 
 public class Todo {
 	@Id
-	private Integer id;
+	private int id;
 	private String title;
 	private String details;
 	private boolean finished;
@@ -30,11 +30,11 @@ public class Todo {
 	private String lastUpdatedBy;
 	private List<Activity> activities;
 
-	public Integer getId() {
+	public int getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 
