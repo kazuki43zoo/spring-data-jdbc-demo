@@ -7,11 +7,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.data.auditing.DateTimeProvider;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jdbc.core.DataAccessStrategy;
-import org.springframework.data.jdbc.core.mapping.JdbcPersistentProperty;
-import org.springframework.data.jdbc.core.mapping.NamingStrategy;
 import org.springframework.data.jdbc.mybatis.MyBatisDataAccessStrategy;
 import org.springframework.data.jdbc.repository.config.EnableJdbcAuditing;
 import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
+import org.springframework.data.relational.core.mapping.NamingStrategy;
+import org.springframework.data.relational.core.mapping.RelationalPersistentProperty;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
@@ -33,11 +33,11 @@ public class SpringDataJdbcMyBatisImplTests extends AbstractSpringDataJdbcTests 
 		NamingStrategy namingStrategy() {
 			return new NamingStrategy(){
 				@Override
-				public String getReverseColumnName(JdbcPersistentProperty property) {
+				public String getReverseColumnName(RelationalPersistentProperty property) {
 					return NamingStrategy.super.getReverseColumnName(property).toLowerCase() + "_id";
 				}
 				@Override
-				public String getKeyColumn(JdbcPersistentProperty property) {
+				public String getKeyColumn(RelationalPersistentProperty property) {
 					return "sort_order";
 				}
 			};

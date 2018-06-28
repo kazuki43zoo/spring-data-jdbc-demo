@@ -12,13 +12,13 @@ import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.AuditorAware;
-import org.springframework.data.jdbc.core.mapping.ConversionCustomizer;
-import org.springframework.data.jdbc.core.mapping.JdbcPersistentProperty;
-import org.springframework.data.jdbc.core.mapping.NamingStrategy;
 import org.springframework.data.jdbc.repository.config.EnableJdbcAuditing;
 import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
 
 import com.example.demo.domain.Todo;
+import org.springframework.data.relational.core.mapping.ConversionCustomizer;
+import org.springframework.data.relational.core.mapping.NamingStrategy;
+import org.springframework.data.relational.core.mapping.RelationalPersistentProperty;
 
 @SpringBootTest(classes = { SpringDataJdbcMybatisDemoApplication.class,
 		SpringDataJdbcSpringJdbcImplTests.SpringDataJdbcConfig.class })
@@ -155,11 +155,11 @@ public class SpringDataJdbcSpringJdbcImplTests extends AbstractSpringDataJdbcTes
 		NamingStrategy namingStrategy() {
 			return new NamingStrategy(){
 				@Override
-				public String getReverseColumnName(JdbcPersistentProperty property) {
+				public String getReverseColumnName(RelationalPersistentProperty property) {
 					return NamingStrategy.super.getReverseColumnName(property).toLowerCase() + "_id";
 				}
 				@Override
-				public String getKeyColumn(JdbcPersistentProperty property) {
+				public String getKeyColumn(RelationalPersistentProperty property) {
 					return "sort_order";
 				}
 			};
