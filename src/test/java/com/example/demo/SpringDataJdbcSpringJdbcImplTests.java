@@ -1,27 +1,31 @@
 package com.example.demo;
 
-import java.sql.Clob;
-import java.sql.SQLException;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
+import com.example.demo.domain.Todo;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.data.convert.CustomConversions;
 import org.springframework.data.domain.AuditorAware;
+import org.springframework.data.jdbc.core.convert.JdbcCustomConversions;
 import org.springframework.data.jdbc.repository.config.EnableJdbcAuditing;
 import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
-
-import com.example.demo.domain.Todo;
-import org.springframework.data.relational.core.mapping.ConversionCustomizer;
 import org.springframework.data.relational.core.mapping.NamingStrategy;
 import org.springframework.data.relational.core.mapping.RelationalPersistentProperty;
 
-@SpringBootTest(classes = { SpringDataJdbcMybatisDemoApplication.class,
-		SpringDataJdbcSpringJdbcImplTests.SpringDataJdbcConfig.class })
+import java.sql.Clob;
+import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+//import org.springframework.data.relational.core.mapping.ConversionCustomizer;
+
+@SpringBootTest(classes = {SpringDataJdbcMybatisDemoApplication.class,
+		SpringDataJdbcSpringJdbcImplTests.SpringDataJdbcConfig.class})
 public class SpringDataJdbcSpringJdbcImplTests extends AbstractSpringDataJdbcTests {
 
 	@Test
@@ -138,26 +142,27 @@ public class SpringDataJdbcSpringJdbcImplTests extends AbstractSpringDataJdbcTes
 	public static class SpringDataJdbcConfig {
 
 		@Bean
-		ConversionCustomizer conversionCustomizer() {
-			return conversionService -> {
-				// for converter 'TEXT' column
-				conversionService.addConverter(Clob.class, String.class, clob -> {
+		CustomConversions jdbcCustomConversions() {
+			return new JdbcCustomConversions(Collections.singletonList(new Converter<Clob, String>() {
+				@Override
+				public String convert(Clob clob) {
 					try {
 						return clob == null ? null : clob.getSubString(1L, (int) clob.length());
 					} catch (SQLException e) {
 						throw new IllegalStateException(e);
 					}
-				});
-			};
+				}
+			}));
 		}
 
 		@Bean
 		NamingStrategy namingStrategy() {
-			return new NamingStrategy(){
+			return new NamingStrategy() {
 				@Override
 				public String getReverseColumnName(RelationalPersistentProperty property) {
 					return NamingStrategy.super.getReverseColumnName(property).toLowerCase() + "_id";
 				}
+
 				@Override
 				public String getKeyColumn(RelationalPersistentProperty property) {
 					return "sort_order";

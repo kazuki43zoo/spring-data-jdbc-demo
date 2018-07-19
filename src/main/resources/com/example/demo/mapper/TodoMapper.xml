@@ -26,6 +26,9 @@
 	<delete id="deleteAll">
 		DELETE FROM todo
 	</delete>
+	<delete id="deleteAll-activities">
+		DELETE FROM activity WHERE todo_id = #{id}
+	</delete>
 	<select id="existsById" resultType="_boolean">
 		SELECT count(*) FROM todo WHERE id = #{id}
 	</select>
