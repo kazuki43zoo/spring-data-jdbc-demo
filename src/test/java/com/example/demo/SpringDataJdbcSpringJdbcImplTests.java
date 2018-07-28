@@ -5,12 +5,14 @@ import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.convert.CustomConversions;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jdbc.core.convert.JdbcCustomConversions;
 import org.springframework.data.jdbc.repository.config.EnableJdbcAuditing;
 import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
+import org.springframework.data.jdbc.repository.config.JdbcConfiguration;
 import org.springframework.data.relational.core.mapping.NamingStrategy;
 import org.springframework.data.relational.core.mapping.RelationalPersistentProperty;
 
@@ -139,6 +141,7 @@ public class SpringDataJdbcSpringJdbcImplTests extends AbstractSpringDataJdbcTes
 
 	@EnableJdbcAuditing
 	@EnableJdbcRepositories(repositoryImplementationPostfix = "SpringJdbcImpl")
+	@Import(JdbcConfiguration.class)
 	public static class SpringDataJdbcConfig {
 
 		@Bean
