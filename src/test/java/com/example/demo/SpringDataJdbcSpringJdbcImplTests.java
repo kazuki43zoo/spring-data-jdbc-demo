@@ -5,6 +5,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.convert.CustomConversions;
@@ -141,11 +142,10 @@ public class SpringDataJdbcSpringJdbcImplTests extends AbstractSpringDataJdbcTes
 
 	@EnableJdbcAuditing
 	@EnableJdbcRepositories(repositoryImplementationPostfix = "SpringJdbcImpl")
-	@Import(JdbcConfiguration.class)
-	public static class SpringDataJdbcConfig {
+	public static class SpringDataJdbcConfig extends JdbcConfiguration {
 
-		@Bean
-		CustomConversions jdbcCustomConversions() {
+		@Override
+		protected JdbcCustomConversions jdbcCustomConversions() {
 			return new JdbcCustomConversions(Collections.singletonList(new Converter<Clob, String>() {
 				@Override
 				public String convert(Clob clob) {

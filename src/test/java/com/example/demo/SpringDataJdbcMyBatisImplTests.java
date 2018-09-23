@@ -4,6 +4,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.auditing.DateTimeProvider;
 import org.springframework.data.domain.AuditorAware;
@@ -25,8 +26,7 @@ public class SpringDataJdbcMyBatisImplTests extends AbstractSpringDataJdbcTests 
 
 	@EnableJdbcAuditing(dateTimeProviderRef = "dateTimeProvider")
 	@EnableJdbcRepositories(repositoryImplementationPostfix = "MyBatisImpl")
-	@Import(JdbcConfiguration.class)
-	public static class SpringDataJdbcConfig {
+	public static class SpringDataJdbcConfig extends JdbcConfiguration {
 		@Bean
 		DataAccessStrategy dataAccessStrategy(SqlSession sqlSession) {
 			return new MyBatisDataAccessStrategy(sqlSession);
